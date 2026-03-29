@@ -312,7 +312,7 @@ label.text = RTLService.Convert("قهرمان خود را برای ورود به
 ## Support
 
 For questions, issues, or feedback, please contact us at:  
-[Email Support](mailto:raymongame@gmail.com)
+[rtl@femoli.com](mailto:rtl@femoli.com)
 
 ## Unity Asset Store
 
@@ -321,4 +321,4 @@ http://u3d.as/3kv
 
 ---
 
-_© Raymon Game - Right to Left (RTL) Text Plugin for Unity_
+_©Femoli RTL - Right to Left (RTL) Text Plugin for Unity_
