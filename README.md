@@ -119,7 +119,8 @@ RTLService.Convert(
     string input,
     NumberFormat numberFormat = NumberFormat.Context,
     ConvertDirection convertDirection = ConvertDirection.Forward,
-    bool richText = true
+    bool richText = true,
+    BaseDirection baseDirection = BaseDirection.Auto
 );
 ```
 
@@ -129,8 +130,24 @@ RTLService.Convert(
 | `numberFormat`     | No       | `NumberFormat.Context`     | Controls how digits are rendered in the output. `Context` keeps digits exactly as they appear in the input. `Arabic` forces Eastern Arabic numerals (٠١٢٣٤٥٦٧٨٩), `Farsi` forces Farsi numerals (۰۱۲۳۴۵۶۷۸۹), and `English` forces Western digits (0123456789).                                                  |
 | `convertDirection` | No       | `ConvertDirection.Forward` | `Forward` produces the natural visual RTL reading order and is correct for the vast majority of use cases. Use `Backward` only for specific UI layouts that already reverse character order (e.g. custom text meshes).                                                                                           |
 | `richText`         | No       | `true`                     | When `true`, Unity rich text tags such as `<color>`, `<b>`, `<i>`, and `<size>` are detected, extracted, and reattached after conversion so they survive the reordering step intact. Set to `false` when your input is plain text and angle-bracket characters should be treated as literals rather than markup. |
+| `baseDirection`    | No       | `BaseDirection.Auto`       | Controls base paragraph direction for mixed LTR/RTL text. `Auto` detects direction from the first alphabetic character (recommended default for most UI strings). `ForceRTL` treats mixed content as RTL when any RTL text is present, which is useful for RTL-first paragraphs that start with an English word or token. |
 
 > **Note:** If an unexpected error occurs internally, `Convert` returns an empty string `""` rather than throwing an exception. Always check that the result is non-empty before assigning it to a text component if a fallback is important.
+
+#### BaseDirection In Mixed Text
+
+Use `baseDirection` when your sentence mixes English and RTL text and you want to control overall block order.
+
+- `BaseDirection.Auto` (default): best for general-purpose content. Direction follows the first alphabetic character, so LTR-starting mixed text keeps LTR block order.
+- `BaseDirection.ForceRTL`: use this when your UI is RTL-first and mixed text should still read as an RTL paragraph, even if it starts with LTR content.
+
+```csharp
+// Example: force RTL paragraph behavior for mixed English/Arabic text.
+label.text = RTLService.Convert(
+    "Version 2.0 تم التفعيل بنجاح",
+    baseDirection: BaseDirection.ForceRTL
+);
+```
 
 ---
 
@@ -226,6 +243,7 @@ Both overloads accept the same optional parameters after their font/settings arg
 | `numberFormat`     | No       | `NumberFormat.Context`     | Controls how digits are rendered. `Context` keeps digits as-is; `Arabic` forces ٠١٢٣٤٥٦٧٨٩; `Farsi` forces ۰۱۲۳۴۵۶۷۸۹; `English` forces 0–9.                                                               |
 | `convertDirection` | No       | `ConvertDirection.Forward` | `Forward` produces natural RTL visual order. Use `Backward` only for layouts that already invert character order.                                                                                          |
 | `richText`         | No       | `true`                     | When `true`, Unity rich text tags (`<color>`, `<b>`, `<i>`, `<size>`, etc.) are preserved through the conversion. Set to `false` to treat the input as plain text with no markup.                          |
+| `baseDirection`    | No       | `BaseDirection.Auto`       | Same behavior as `Convert`. Use `ForceRTL` to keep paragraph-level RTL block order in mixed LTR/RTL wrapped text, especially when lines begin with English tokens.                                            |
 
 ---
 
